@@ -90,6 +90,9 @@ def test_apercu_d_un_bon_de_commande_remplace_le_pdf_du_travail(client, ifs, rel
     assert reponse.status_code == 200
     assert ifs.ecritures == [("pdf", 56607, "pdf-47479", "W/p47479", b"%PDF-notre")]
     assert relais == []
+    # la réponse exacte d'Armony : le workflow d'aperçu d'IFS la lit
+    assert reponse.headers["content-type"].startswith("application/xml")
+    assert reponse.text.endswith("<Root><Error>Dummy</Error></Root>")
 
 
 def test_apercu_d_une_autre_editique_relaye_tel_quel_a_armony(client, ifs, relais):

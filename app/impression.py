@@ -50,6 +50,16 @@ ESSAIS_EVENEMENT = 3
 
 _fond = ThreadPoolExecutor(max_workers=2, thread_name_prefix="impression-ok")
 
+# Ce que renvoie Armony (ReportPreview.axdata : XDoc puis FileReturn de « response_armony.xml »). Le workflow
+# d'aperçu d'IFS lit la réponse : un « OK » en texte la fait échouer, et la boîte affiche « PrintDialog/PrintDialog
+# (erreur serveur) » alors même que le PDF est déjà dans l'archive (constaté sur CFG le 29/10/2026).
+REPONSE_ARMONY = '<?xml version="1.0" encoding="utf-8"?><Root><Error>Dummy</Error></Root>'
+
+
+def _reponse_armony() -> Response:
+    return Response(REPONSE_ARMONY, media_type="application/xml",
+                    headers={"Content-Disposition": 'attachment; filename="response_armony.xml"'})
+
 
 class NonTraite(Exception):
     """Ce n'est pas un bon de commande « Armony layout » : relayer à Armony."""
@@ -263,7 +273,7 @@ async def get_download(request: Request):
         _consigner("apercu", parametres, debut, "erreur", erreur=str(err))
         return PlainTextResponse(f"Éditique non produite : {err}", status_code=500)
     _consigner("apercu", parametres, debut, "ok", **details)
-    return PlainTextResponse("OK")
+    return _reponse_armony()
 
 
 def _ok_en_fond(parametres: dict[str, str], corps: bytes, type_contenu: str | None, requete: str) -> None:
@@ -289,5 +299,5 @@ async def execute(request: Request):
     if parametres.get("layout_name") == OK and parametres.get("LAYOUT_NAME_") == DISPOSITION:
         # Asynchrone, comme Armony (AxAsync=True) : IFS n'attend pas la fin du traitement.
         _fond.submit(_ok_en_fond, parametres, corps, type_contenu, request.url.query)
-        return PlainTextResponse("OK")
+        return _reponse_armony()
     return await run_in_threadpool(_relayer, "Execute.aspx", request.method, request.url.query, corps, type_contenu)

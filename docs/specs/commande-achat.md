@@ -264,6 +264,18 @@ qui est un flux. Dans `BpmnWorkflowDataSet`, le même champ est déclaré en tex
 `oracle.sql.BLOB@…` au lieu du contenu. L'adresse du message n'est pas une règle IFS Connect : elle est portée par
 l'action d'événement elle-même (`AddressData`).
 
+**Le script d'aperçu d'Armony** (`ReportPreview.axdata`, fourni par Benoit le 29/10/2026) :
+1. il lit une fois la ligne `PdfArchiveSet` du travail (`ResultKey`, `PrintJobId`), et s'arrête en erreur si elle
+   n'existe pas encore ;
+2. il choisit son projet par la table d'aiguillage, produit le PDF et le dépose par `PATCH …/Pdf` (`If-Match`) ;
+3. pour l'agent Aurena seulement, il écrit l'e-mail de l'utilisateur dans les réglages du travail ;
+4. il **répond un fichier XML** `response_armony.xml` : `<Root><Error>Dummy</Error></Root>`. Le workflow d'IFS lit
+   cette réponse. Un simple « OK » en texte le fait échouer, et la boîte affiche « PrintDialog/PrintDialog (erreur
+   serveur) » alors que le PDF est déjà dans l'archive (constaté sur CFG, corrigé en 0.3.2).
+
+Le workflow d'aperçu se déclenche sur toute demande d'impression de la boîte, OK compris : sur OK, IFS appelle
+donc l'aperçu, puis `Execute.aspx`.
+
 **Conséquence** : `ARMONY_SERVER` est l'aiguillage unique. Si on le pointe vers l'application, et qu'elle répond aux
 mêmes adresses, IFS l'appelle à la place d'Armony sans autre changement. Le retour arrière consiste à remettre la
 valeur d'origine. En revanche, ce paramètre vaut pour les cinq éditiques : ce qui n'est pas le bon de commande doit
@@ -348,7 +360,7 @@ Les écritures sont exactement celles d'Armony. La façon dont IFS appellera l'a
 | Q10 | La commande personnalisée « ouvrir une URL » de Page Designer accepte-t-elle `${OrderNo}` sur l'écran Commande d'achat en 25R2 ? Seulement si on garde le bouton d'aperçu. | essai dans Page Designer sur CFG |
 | Q11 | ~~Comment le workflow `ARMONY_REPORT_PRVW` et le message `ARMONY_REPORT` atteignent-ils le serveur Armony ?~~ **Répondu le 29/10/2026** : trois appels HTTP vers `ARMONY_SERVER`, § 5.2. | – |
 | Q12 | Comment faire appeler l'application à la place d'Armony pour le seul bon de commande, sans toucher aux quatre autres éditiques ? Faut-il garder la recréation du travail d'impression (`ARMONY_REPORT_JOB`) ? | administrateur IFS, d'après la réponse à Q11 |
-| Q13 | Quel serveur SMTP et quelle adresse d'expéditeur pour l'e-mail au fournisseur ? | DSI ; configuration actuelle du serveur Armony |
+| Q13 | Quel serveur SMTP et quelle adresse d'expéditeur pour l'e-mail au fournisseur ? **En partie tranché le 29/10/2026 (Benoit, DSI)** : l'expéditeur est une adresse `@ga.fr` ; sur AWS, l'envoi passe par SES, avec le domaine `ga.fr` vérifié (DKIM, SPF). Reste à choisir l'adresse. | DSI |
 | Q14 | Combien de temps la boîte attend-elle l'aperçu, et que voit l'utilisateur si l'application échoue ? INT-281 a vu un rendu d'IFS appauvri rester dans l'archive quand le rendu n'aboutit pas. | essai sur CFG une fois branché |
 
 **Première vérification en réel** : sur CFG, ouvrir `/commande-achat/<n°>/donnees` pour une commande connue. La

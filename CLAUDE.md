@@ -19,7 +19,14 @@ IFS, met en page en HTML, Chromium rend le PDF. **Cible (D-008)** : prendre la p
 .\.venv\Scripts\python.exe outils\apercu.py        # PDF sans IFS -> sorties\
 ```
 
-## État au 29/10/2026 — version 0.3.0
+## État au 29/10/2026 — version 0.3.1
+
+- ⚠️ **CFG est BASCULÉ** depuis le 29/10 : `ARMONY_SERVER` = `https://ifs-app-editique.onrender.com` (Render, dépôts
+  `guinetb-globasoft/ifs-editique` et `GA-SA/editique-ifs`). Retour à Armony : `outils\armony_server.py retablir`.
+  **Aperçu réel de bout en bout réussi le 29/10** : IFS → Render → notre PDF dans l'archive (clé 56611, C105125,
+  4,0 s dont 2,6 s de lecture IFS). 0.3.1 avait corrigé les clés décimales (`RESULT_KEY_=56608.0`). OK et e-mail
+  pas encore éprouvés. Archive 56607 de BENGUI encore remplacée
+  par notre PDF : `outils\essai_archive.py restaurer 56607`.
 
 - 🎯 Cible revue le 29/10 (D-008) : se brancher sur l'impression IFS à la place d'Armony. Circuit Armony relevé en
   réel sur CFG : spec § 5.
