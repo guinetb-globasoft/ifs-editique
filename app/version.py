@@ -11,6 +11,7 @@ capture d'écran), pas à promettre une compatibilité.
 | 0.2.1 | 29/10/2026 | Correctif : les lectures filtrées (`$filter`) échouaient toutes en réel, IFS refusant l'espace encodée « + » ; outil d'essai `outils/essai_archive.py` |
 | 0.2.2 | 29/10/2026 | Le PDF est signé : titre « Bon de commande <n°> », application « ifs-app-editique <version> » dans ses propriétés |
 | 0.3.0 | 29/10/2026 | Branchement sur l'impression IFS aux adresses d'Armony (`/GetDownload.aspx`, `/Execute.aspx`), relais à Armony du reste, écritures d'Armony (`app/ifs/ecriture.py`), image Docker pour Render |
+| 0.3.1 | 29/10/2026 | Correctif : IFS passe les clés en décimal (`RESULT_KEY_=56608.0`) ; le premier aperçu réel répondait 500 |
 """
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"

@@ -10,8 +10,9 @@ from fastapi.testclient import TestClient
 from app import generations, impression, main
 from app.ifs import ecriture
 
-APERCU = "/GetDownload.aspx?layout_name=ReportPreview.axdata&RESULT_KEY_=56607&PRINT_JOB_ID_=47479&USER_ID_=BENGUI"
-OK = ("/Execute.aspx?layout_name=ReportOk.axdata&&AxAsync=True&&RESULT_KEY_=56607&&PRINT_JOB_ID_=47479"
+# Les clés telles qu'IFS les envoie : en décimal (premier appel réel, CFG, 29/10/2026).
+APERCU = "/GetDownload.aspx?layout_name=ReportPreview.axdata&RESULT_KEY_=56607.0&PRINT_JOB_ID_=47479.0&USER_ID_=BENGUI"
+OK = ("/Execute.aspx?layout_name=ReportOk.axdata&&AxAsync=True&&RESULT_KEY_=56607.0&&PRINT_JOB_ID_=47479.0"
       "&&USER_ID_=BENGUI&&LANGUAGE_CODE_=fr&&LAYOUT_NAME_=PurchaseOrderPrintRepArmony.rdl"
       "&&LOCALE_LANGUAGE_=fr&&LOCALE_COUNTRY_=FR&&COPIES_=1")
 ARCHIVE_BDC = {"ResultKey": 56607, "ReportId": "PURCHASE_ORDER_PRINT_REP", "Notes": "N° cde: C105125",
@@ -107,7 +108,7 @@ def test_agent_aurena_toujours_relaye(client, ifs, relais):
 
 
 def test_ok_suit_le_connecteur_armony_dans_l_ordre(ifs):
-    parametres = {"RESULT_KEY_": "56607", "PRINT_JOB_ID_": "47479", "USER_ID_": "BENGUI", "LANGUAGE_CODE_": "fr",
+    parametres = {"RESULT_KEY_": "56607.0", "PRINT_JOB_ID_": "47479.0", "USER_ID_": "BENGUI", "LANGUAGE_CODE_": "fr",
                   "LAYOUT_NAME_": impression.DISPOSITION, "LOCALE_LANGUAGE_": "fr", "LOCALE_COUNTRY_": "FR"}
     details = impression.ok(parametres)
     supprimer, travail, pdf_, imprime = ifs.ecritures
@@ -125,7 +126,7 @@ def test_ok_du_bon_de_commande_repond_tout_de_suite(client, ifs, monkeypatch):
     lances = []
     monkeypatch.setattr(impression._fond, "submit", lambda *args: lances.append(args))
     assert client.post(OK).status_code == 200
-    assert lances and lances[0][1]["RESULT_KEY_"] == "56607"
+    assert lances and lances[0][1]["RESULT_KEY_"] == "56607.0"
 
 
 def test_numero_de_commande_et_reglages():

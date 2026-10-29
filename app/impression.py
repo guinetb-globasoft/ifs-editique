@@ -21,6 +21,7 @@ import re
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from decimal import Decimal, InvalidOperation
 
 import requests
 from fastapi import APIRouter, Request
@@ -64,6 +65,12 @@ def _technique() -> tuple[LecteurIFS, EcrivainIFS]:
     jeton = compte_technique.jeton()
     return (LecteurIFS(jeton=jeton, base=config.url_projection, langue="fr-FR"),
             EcrivainIFS(jeton=jeton, base=config.url_projection))
+
+
+def entier(valeur: str) -> int:
+    """Une clé passée par IFS dans l'URL. Il l'écrit en décimal : `RESULT_KEY_=56608.0` (constaté sur CFG le
+    29/10/2026, premier appel réel)."""
+    return int(Decimal(valeur))
 
 
 def numero_de_commande(rapport: dict | None) -> str | None:
@@ -174,7 +181,7 @@ def imprimante_physique(imprimante: str) -> str:
 def ok(parametres: dict[str, str]) -> dict:
     """OK dans la boîte : la suite exacte du connecteur Armony `ReportOk.axdata` (spec § 5.3)."""
     lecteur, ecrivain = _technique()
-    cle, travail = int(parametres["RESULT_KEY_"]), int(parametres["PRINT_JOB_ID_"])
+    cle, travail = entier(parametres["RESULT_KEY_"]), entier(parametres["PRINT_JOB_ID_"])
     _, numero = _bon_de_commande(lecteur, cle)
 
     # 1. Le travail reçu : son imprimante, ses réglages (adresse e-mail…), puis sa suppression.
@@ -246,12 +253,13 @@ async def get_download(request: Request):
         return await run_in_threadpool(_relayer, "GetDownload.aspx", request.method, request.url.query, corps,
                                        request.headers.get("content-type"))
     try:
-        details = await run_in_threadpool(apercu, int(parametres["RESULT_KEY_"]), int(parametres["PRINT_JOB_ID_"]))
+        details = await run_in_threadpool(apercu, entier(parametres["RESULT_KEY_"]),
+                                          entier(parametres["PRINT_JOB_ID_"]))
     except NonTraite as raison:
         journal.info("Aperçu clé %s relayé à Armony (%s).", parametres.get("RESULT_KEY_"), raison)
         return await run_in_threadpool(_relayer, "GetDownload.aspx", request.method, request.url.query, corps,
                                        request.headers.get("content-type"))
-    except (ErreurIFS, KeyError, ValueError) as err:
+    except (ErreurIFS, KeyError, ValueError, InvalidOperation) as err:
         _consigner("apercu", parametres, debut, "erreur", erreur=str(err))
         return PlainTextResponse(f"Éditique non produite : {err}", status_code=500)
     _consigner("apercu", parametres, debut, "ok", **details)
