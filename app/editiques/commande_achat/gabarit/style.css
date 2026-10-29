@@ -34,13 +34,18 @@ html, body {
 /* Recalage mesuré contre le PDF Armony (outils de mesure : voir README) :
    les cadres d'Armony tombent 0,6 mm plus bas que leur cote, le bandeau non. */
 .premiere-page { top: 0.6mm; }
-.premiere-page .bandeau { top: -0.6mm; }
+/* Bandeau : mesuré le 29/10/2026 contre Armony (C106553), il tombait 0,22 mm trop bas et son titre 0,32 mm trop
+   haut : les majuscules affleuraient le bord du rose, blanc sur blanc (« titre haché »). D'où -0,82 mm et le
+   retrait haut du texte dans .bandeau. */
+.premiere-page .bandeau { top: -0.82mm; }
 .premiere-page .c, .premiere-page .titre-cadre, .premiere-page .statut,
 .premiere-page .bloc-c, .premiere-page .commentaire { margin-top: -0.3mm; }
 .premiere-page .a { margin-top: -0.5mm; }
+/* « COMMANDE / REVISION » : 0,58 mm trop haut, mesuré le 29/10/2026 contre Armony (C106553). */
+.premiere-page .statut { margin-top: 0.28mm; }
 
 .bandeau {
-  left: 11mm; top: 0; width: 190.6mm; height: 11.6mm;
+  left: 11mm; top: 0; width: 190.6mm; height: 11.6mm; padding-top: 0.54mm;
   background: var(--rose); color: #fff;
   font-weight: bold; font-size: 14pt; line-height: 6.2mm;
   text-align: center;

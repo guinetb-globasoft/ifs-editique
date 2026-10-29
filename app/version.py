@@ -13,6 +13,7 @@ capture d'écran), pas à promettre une compatibilité.
 | 0.3.0 | 29/10/2026 | Branchement sur l'impression IFS aux adresses d'Armony (`/GetDownload.aspx`, `/Execute.aspx`), relais à Armony du reste, écritures d'Armony (`app/ifs/ecriture.py`), image Docker pour Render |
 | 0.3.1 | 29/10/2026 | Correctif : IFS passe les clés en décimal (`RESULT_KEY_=56608.0`) ; le premier aperçu réel répondait 500 |
 | 0.3.2 | 29/10/2026 | Correctif : répondre au workflow d'IFS le XML d'Armony (`<Root><Error>Dummy</Error></Root>`) et non « OK » ; la boîte affichait « erreur serveur » |
+| 0.3.3 | 29/10/2026 | Titre du bandeau et lignes « COMMANDE / REVISION » recalés sur Armony par la ligne de base : le haut du titre était coupé |
 """
 
-VERSION = "0.3.2"
+VERSION = "0.3.3"
