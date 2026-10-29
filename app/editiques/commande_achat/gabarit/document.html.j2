@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>{{ t("BON DE COMMANDE N°") }} {{ c.numero }}</title>
+<meta name="generator" content="ifs-app-editique {{ version }}">
+<style>{{ style | safe }}</style>
+</head>
+<body>
+
+{# ------------------------------------------------------------------
+   Page 1 : en-tête fixe. Cotes = Armony (mm depuis le haut de la
+   feuille) moins 25 mm de marge haute.
+   ------------------------------------------------------------------ #}
+<section class="premiere-page">
+  <div class="bandeau">
+    <div style="margin-top:-1.7mm; line-height:6.6mm">
+      {% if c.brouillon %}{{ t("BROUILLON DE COMMANDE") }} {{ c.numero }}{% else %}{{ t("BON DE COMMANDE N°") }} {{ c.numero }}{% endif %}
+    </div>
+    <div style="line-height:6.6mm">{{ t("EN DATE DU") }} {{ c.date_commande | date_fr }}</div>
+  </div>
+  <div class="statut" style="top:14.3mm">{{ t("COMMANDE LIBEREE") }}</div>
+  <div class="statut" style="top:19.3mm">REVISION N&#186; {{ c.revision }}</div>
+
+  {# --- Société (« client ») --- #}
+  <div class="cadre" style="left:10mm; top:25mm"></div>
+  <div class="titre-cadre" style="left:11mm; top:26.3mm; width:86.2mm">{{ c.societe.nom }}</div>
+  <div class="c" style="left:12mm; top:34.1mm">{{ t("SIRET :") }} {{ c.societe.siret }}</div>
+  <div class="c" style="left:12mm; top:39.3mm">{{ t("AdressedeFacturation") }}</div>
+  <div class="bloc-a" style="left:53.5mm; top:39mm; width:47.4mm">
+    {% for l in c.societe.adresse_facturation %}<div>{{ l }}</div>{% endfor %}
+  </div>
+  <div class="c" style="left:12mm; top:54.3mm">{{ t("Projet / section :") }}  {{ c.societe.projet_ou_section }}</div>
+  <div class="c" style="left:12mm; top:59.3mm">{{ t("Numéro projet") }} {{ c.societe.numero_projet }}</div>
+  <div class="c" style="left:12mm; top:64.8mm">{{ t("Contact :") }} {{ c.societe.contact }}</div>
+  <div class="c" style="left:12mm; top:69.6mm">{{ t("Mail :") }} {{ c.societe.mail }}</div>
+  <div class="c" style="left:12mm; top:74.6mm">{{ t("Téléphone ") }} {{ c.societe.telephone }}</div>
+
+  {# --- Fournisseur --- #}
+  <div class="cadre" style="left:106mm; top:25mm"></div>
+  <div class="titre-cadre" style="left:114.9mm; top:26.3mm; width:73.7mm">{{ c.fournisseur.nom }}</div>
+  <div class="a" style="left:109.3mm; top:34.5mm">{{ t("SIRET :") }} {{ c.fournisseur.siret }}</div>
+  <div class="a" style="left:109.3mm; top:39.8mm">{{ t("Adresse") }}</div>
+  <div class="bloc-a" style="left:130.6mm; top:39.1mm; width:65mm">
+    {% for l in c.fournisseur.adresse %}<div>{{ l }}</div>{% endfor %}
+  </div>
+  <div class="a" style="left:109.3mm; top:50.7mm">{{ t("Contact :") }} {{ c.fournisseur.contact }}</div>
+  <div class="a" style="left:109.3mm; top:55.9mm">{{ t("Mail :") }} {{ c.fournisseur.mail }}</div>
+  <div class="bloc-a" style="left:109.3mm; top:61.3mm; width:88mm; line-height:4.9mm">{{ t("Conditions de paiement :") }} {{ c.fournisseur.conditions_paiement }}</div>
+  <div class="c" style="left:109.3mm; top:70.8mm">{{ t("Mode de règlement :") }} {{ c.fournisseur.mode_reglement }}</div>
+
+  {# --- Livraison --- #}
+  <div class="cadre" style="left:10mm; top:90mm"></div>
+  <div class="titre-cadre" style="left:10.9mm; top:90.9mm; width:86.2mm">{{ t("LIVRAISON") }}</div>
+  <div class="c" style="left:11mm; top:97.3mm">{{ t("Date de livraison :") }} {{ c.livraison.date | date_fr }}</div>
+  <div class="bloc-c" style="left:11mm; top:102.2mm; width:90mm">{{ t("Contact :") }} {{ c.livraison.contact }}</div>
+  <div class="c" style="left:11mm; top:107.3mm">{{ t("Adresse") }}</div>
+  <div class="bloc-c" style="left:38.1mm; top:107mm; width:62.8mm; line-height:5.9mm">
+    {% for l in c.livraison.adresse %}<div>{{ l }}</div>{% endfor %}
+  </div>
+  <div class="bloc-c" style="left:11mm; top:123.1mm; width:90mm">{{ c.livraison.horaires }}</div>
+  <div class="commentaire" style="left:11.5mm; top:130mm; width:90mm">{{ t("Commentaire client :") }}  {{ c.livraison.commentaire }}</div>
+
+  {# --- Modalités de facturation --- #}
+  <div class="cadre" style="left:106mm; top:90mm"></div>
+  <div class="titre-cadre" style="left:109.1mm; top:90.7mm; width:86.2mm">{{ t("MODALITES DE FACTURATION") }}</div>
+  <div class="bloc-a" style="left:108.3mm; top:98mm; width:86.7mm; line-height:5mm">{{ c.facturation.sans_efacture }}</div>
+  <div class="bloc-a" style="left:108.3mm; top:118.3mm; width:86.7mm; line-height:4.9mm">{{ c.facturation.avec_efacture }}</div>
+</section>
+
+{# ------------------------------------------------------------------
+   Zone qui coule : tableau, mentions, signatures.
+   ------------------------------------------------------------------ #}
+<section class="flux">
+  <table class="lignes">
+    <colgroup>
+      <col style="width:15mm"><col style="width:15mm"><col style="width:65mm">
+      <col style="width:15mm"><col style="width:19mm"><col style="width:18mm">
+      <col style="width:14mm"><col style="width:19mm"><col style="width:11mm">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>{{ t("REF CLIENT") }}</th><th>{{ t("REF FOUR") }}</th><th>{{ t("DESIGNATION") }}</th>
+        <th>{{ t("UNITE") }}</th><th>{{ t("QUANTITE") }}</th><th>{{ t("PRIX UNITAIRE") }}</th>
+        <th>{{ t("REMISE %") }}</th><th>{{ t("MONTANT HT") }}</th><th>{{ t("TVA %") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for l in c.lignes %}
+      <tr class="article">
+        <td class="centre">{{ l.ref_client }}</td>
+        <td class="centre">{{ l.ref_fournisseur }}</td>
+        <td>{{ l.designation }}</td>
+        <td class="centre">{{ l.unite }}</td>
+        <td class="droite">{{ l.quantite | nombre }}</td>
+        <td class="droite">{{ l.prix_unitaire | nombre }}</td>
+        <td class="droite">{{ l.remise | nombre }}</td>
+        <td class="droite">{{ l.montant_ht | nombre }}</td>
+        <td class="droite">{{ l.taux_tva | nombre }}</td>
+      </tr>
+      {% if l.adresse_livraison %}
+      <tr class="detail"><td></td><td></td><td colspan="7">{{ t("infos fiche projet") }}  {{ l.adresse_livraison }}</td></tr>{# deux espaces : ceux d'Armony #}
+      {% endif %}
+      {% if l.texte_document %}
+      <tr class="detail"><td></td><td></td><td colspan="7">{{ l.texte_document }}</td></tr>
+      {% endif %}
+    {% endfor %}
+    {% for f in c.frais %}
+      <tr class="article">
+        <td></td><td></td>
+        <td>{{ f.designation }}</td>
+        <td></td>
+        <td class="droite">{{ f.quantite | nombre }}</td>
+        <td class="droite">{{ f.prix_unitaire | nombre }}</td>
+        <td></td>
+        <td class="droite">{{ f.montant_ht | nombre }}</td>
+        <td class="droite">{{ f.taux_tva | nombre }}</td>
+      </tr>
+    {% endfor %}
+      <tr class="total">
+        <td class="libelle-total" colspan="7">{{ t("MONTANT TOTAL HT EN EUROS") }}</td>
+        <td colspan="2">{{ c.total_ht | euros }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if c.phrases_document %}
+  <div class="mentions">
+    {% for p in c.phrases_document %}<p>{{ p }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="signatures">
+    <span>{{ t("Nom et signature du fournisseur") }}</span>
+    <span>{{ t("Nom et signature du client") }}</span>
+  </div>
+</section>
+
+</body>
+</html>

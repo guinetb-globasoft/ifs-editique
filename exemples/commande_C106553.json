@@ -1,0 +1,235 @@
+{
+  "_source": "Réponses IFS reconstituées d'après le bon de commande C106553 imprimé par Armony sur TST le 25/10/2026 (tests-automatisés-IFS, MV-027). Le coordinateur est fictif. Les identifiants internes (DocumentAddressId, NoteId, WayId, Id des encarts) sont inventés : ce fichier n'a pas été enregistré depuis IFS.",
+  "reponses": {
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')": {
+      "OrderNo": "C106553",
+      "Objstate": "Released",
+      "OrderDate": "2026-10-14",
+      "Revision": 0,
+      "Company": "GAE",
+      "Contract": "GAENT",
+      "DocumentAddressId": "1",
+      "VendorNo": "ALGECO",
+      "VendorName": "ALGECO",
+      "AddrNo": "68555065900534",
+      "DocAddrNo": "68555065900534",
+      "ContactName": null,
+      "AuthorizeCode": "CMARTIN",
+      "AuthorizerName": "Camille MARTIN",
+      "BuyerCode": "CMARTIN",
+      "PayTermId": "30FM15",
+      "ProjectId": "CHQ008",
+      "ProjectName": "Ensisheim LCP EUROVIA 16",
+      "ProjectAddressFlag": "No",
+      "ProjectAddressId": null,
+      "Address1": "33 Piste des Géants",
+      "Address2": "CS 27751",
+      "Address3": null,
+      "Address4": null,
+      "Address5": null,
+      "Address6": null,
+      "ZipCode": "31077",
+      "City": "TOULOUSE CEDEX 4",
+      "LabelNote": null,
+      "Reference": null,
+      "NoteId": 1001,
+      "Cf_Ga_Cdeha_Achats": false,
+      "Cf_Ga_Cdeha_Location": false,
+      "Cf_Ga_Cdeha_Prestation": false
+    },
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/LinePartArray": [],
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/LineNopartArray": [
+      {
+        "LineNo": "1",
+        "ReleaseNo": "1",
+        "Objstate": "Released",
+        "VendorPartNo": null,
+        "Description": "marteau",
+        "BuyUnitMeas": "PCS",
+        "BuyQtyDue": 1,
+        "FbuyUnitPrice": 2000,
+        "Discount": 0,
+        "NetAmtBase": 2000,
+        "FeeCode": "20",
+        "WantedDeliveryDate": "2026-10-14T00:00:00Z",
+        "NoteId": 1002,
+        "AddressId": "LCP",
+        "ProjectId": "CHQ008"
+      }
+    ],
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/PurchaseOrderChargeArray": [],
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/CompanyFinanceRef": {
+      "Company": "GAE",
+      "Description": "GA ENTREPRISE SAS"
+    },
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/PayTermIdRef": {
+      "PayTermId": "30FM15",
+      "Description": "Paiement à 30 jours fin de mois le 15"
+    },
+    "PurchaseOrderHandling.svc/PurchaseOrderSet(OrderNo='C106553')/OrderAmountRef": {
+      "OrderNo": "C106553",
+      "NetAmountCurr": 2000,
+      "TotalChargeAmountCurr": 0,
+      "OrderTotalCurr": 2000
+    },
+    "PurchaseOrderHandling.svc/Reference_TaxCodeCommon": [
+      {
+        "FeeCode": "20",
+        "FeeRate": 20
+      },
+      {
+        "FeeCode": "10",
+        "FeeRate": 10
+      }
+    ],
+    "PurchaseOrderHandling.svc/Reference_CompanyAddress": [
+      {
+        "Company": "GAE",
+        "AddressId": "1",
+        "Address1": "33 Piste des Géants",
+        "Address2": "CS 27751",
+        "ZipCode": "31077",
+        "City": "TOULOUSE CEDEX 4"
+      }
+    ],
+    "PurchaseOrderHandling.svc/Reference_SupplierInfoAddress": [
+      {
+        "SupplierId": "ALGECO",
+        "AddressId": "68555065900534",
+        "Address1": "ESPACE DES BERTHILLIERS",
+        "Address2": "164 CHEMIN DE BALME",
+        "ZipCode": "69100",
+        "City": "VILLEURBANNE"
+      }
+    ],
+    "PurchaseOrderHandling.svc/Reference_ProjectAddressLov": [
+      {
+        "ProjectId": "CHQ008",
+        "AddressId": "LCP",
+        "AddressName": "LCP EUROVIA",
+        "Address1": "ZA de la plaine d'Alsace",
+        "ZipCode": "68190",
+        "City": "ENSISHEIM",
+        "County": "Haut-Rhin",
+        "Country": "FR",
+        "Contact": "de 7h30 à 17h30"
+      }
+    ],
+    "PurchaseOrderHandling.svc/Reference_IsoCountry": [
+      {
+        "CountryCode": "FR",
+        "Description": "FRANCE"
+      }
+    ],
+    "CompanyHandling.svc/Reference_CompanyAddressTaxNumber": [
+      {
+        "Company": "GAE",
+        "AddressId": "1",
+        "TaxIdType": "SIRET",
+        "TaxIdNumber": "42826603500123"
+      }
+    ],
+    "CompanyHandling.svc/Reference_CommMethod": [
+      {
+        "Identity": "GAE",
+        "PartyType": "Company",
+        "AddressId": "1",
+        "MethodId": "EMail",
+        "Name": "MAIL DE FACTURATION",
+        "Value": "facturegae@ga.fr",
+        "MethodDefault": true
+      },
+      {
+        "Identity": "GAE",
+        "PartyType": "Company",
+        "AddressId": "1",
+        "MethodId": "Messenger",
+        "Name": "ROUTAGE",
+        "Value": "428266035",
+        "MethodDefault": false
+      }
+    ],
+    "CompanyHandling.svc/CompanySet(Company='GAE')": {
+      "Company": "GAE",
+      "Logotype": "LOGO_GA.png"
+    },
+    "PersonHandling.svc/Reference_CommMethod": [
+      {
+        "Identity": "CMARTIN",
+        "PartyType": "Person",
+        "MethodId": "EMail",
+        "Value": "camille.martin@exemple.fr",
+        "MethodDefault": true
+      },
+      {
+        "Identity": "CMARTIN",
+        "PartyType": "Person",
+        "MethodId": "Phone",
+        "Value": "+33 6 00 00 00 00",
+        "MethodDefault": true
+      }
+    ],
+    "SupplierHandling.svc/Reference_CommMethod": [
+      {
+        "Identity": "ALGECO",
+        "PartyType": "Supplier",
+        "AddressId": "68555065900534",
+        "MethodId": "EMail",
+        "Value": "service.commercial@algeco.com",
+        "MethodDefault": true
+      }
+    ],
+    "SupplierHandling.svc/Reference_PaymentWayPerIdentity": [
+      {
+        "Identity": "ALGECO",
+        "Company": "GAE",
+        "PartyType": "Supplier",
+        "WayId": "VIR",
+        "DefaultPaymentWay": true
+      }
+    ],
+    "SupplierHandling.svc/Reference_PaymentWay": [
+      {
+        "Company": "GAE",
+        "WayId": "VIR",
+        "Description": "VIREMENT SEPA"
+      }
+    ],
+    "PhrasesHandling.svc/Reference_MpccomPhraseText": [
+      {
+        "PhraseId": "ACH05",
+        "LanguageCode": "fr",
+        "PhraseText": "Si votre entreprise n’est pas soumise à l’obligation de facture électronique, mail à utiliser :"
+      },
+      {
+        "PhraseId": "ACH04",
+        "LanguageCode": "fr",
+        "PhraseText": "Si votre entreprise est soumise à l’obligation de facture électronique (e-invoicing) conformément à la règlementation alors toute facture (dont la date de facture est au-delà du 1er septembre 2026) émise en lien avec cette commande, utiliser notre plateforme agréée :"
+      }
+    ],
+    "PdfInsertsHandling.svc/ReportPdfInserts": [
+      {
+        "Id": "CGA1",
+        "FileName": "CGA ACHAT - Fournitures et services courants.pdf",
+        "FileDate": "2025-06-01"
+      },
+      {
+        "Id": "CGA2",
+        "FileName": "CGA LOCATION.pdf",
+        "FileDate": "2025-06-01"
+      },
+      {
+        "Id": "CGA3",
+        "FileName": "CGA PRESTATION.pdf",
+        "FileDate": "2025-06-01"
+      }
+    ],
+    "DocumentTextHandling.svc/Reference_DocumentText": []
+  },
+  "binaires": {
+    "ReportImagesHandling.svc/ReportLogoSet(ImageName='LOGO_GA.png')/FileData": "logo_exemple.png",
+    "PdfInsertsHandling.svc/ReportPdfInserts(Id='CGA1')/FileData": "cga_exemple.pdf",
+    "PdfInsertsHandling.svc/ReportPdfInserts(Id='CGA2')/FileData": "cga_exemple.pdf",
+    "PdfInsertsHandling.svc/ReportPdfInserts(Id='CGA3')/FileData": "cga_exemple.pdf"
+  }
+}

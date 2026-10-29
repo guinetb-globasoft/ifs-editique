@@ -1,0 +1,110 @@
+/* Bon de commande — mise en page reprise d'Armony (Commande_dachat v1).
+   Toutes les positions sont en mm, mesurées sur le PDF Armony de C106553
+   (TST, 25/10/2026). La page 1 porte un en-tête fixe ; le tableau coule
+   ensuite de page en page, son en-tête répété. */
+
+:root {
+  --rose: #ec007e;
+  --gris: #a3a3a3;
+  --calibri: Calibri, Carlito, "Segoe UI", sans-serif;
+  --arial: Arial, "Liberation Sans", Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--calibri);
+  font-size: 11pt;
+  /* DynamicPDF (le moteur d'Armony) n'applique pas le crénage : avec, le texte
+     est 0,5 % plus étroit et les lignes ne se coupent plus aux mêmes mots. */
+  font-kerning: none;
+  color: #000;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ------------------------------------------------ en-tête de la page 1
+   Repère : le haut de la zone imprimable, à 25 mm du bord de la feuille.
+   Une cote « y » d'Armony devient « top: y - 25 ». */
+.premiere-page { position: relative; height: 155.8mm; }
+.premiere-page > * { position: absolute; }
+
+/* Recalage mesuré contre le PDF Armony (outils de mesure : voir README) :
+   les cadres d'Armony tombent 0,6 mm plus bas que leur cote, le bandeau non. */
+.premiere-page { top: 0.6mm; }
+.premiere-page .bandeau { top: -0.6mm; }
+.premiere-page .c, .premiere-page .titre-cadre, .premiere-page .statut,
+.premiere-page .bloc-c, .premiere-page .commentaire { margin-top: -0.3mm; }
+.premiere-page .a { margin-top: -0.5mm; }
+
+.bandeau {
+  left: 11mm; top: 0; width: 190.6mm; height: 11.6mm;
+  background: var(--rose); color: #fff;
+  font-weight: bold; font-size: 14pt; line-height: 6.2mm;
+  text-align: center;
+}
+.bandeau div { width: 210mm; margin-left: -11mm; }
+
+.statut {
+  left: 0; width: 210mm; text-align: center;
+  color: var(--gris); font-weight: bold; line-height: 1;
+}
+
+.cadre { width: 92mm; height: 60mm; border: 1pt solid #000; background: #fff; }
+.titre-cadre { color: var(--rose); font-weight: bold; text-align: center; line-height: 1; }
+
+.c { line-height: 1; white-space: nowrap; }                  /* Calibri 11, une ligne */
+.a { font-family: var(--arial); font-size: 10pt; line-height: 1; white-space: nowrap; }
+.bloc-a { font-family: var(--arial); font-size: 10pt; line-height: 4.95mm; }
+.bloc-c { line-height: 4.9mm; }
+.commentaire { font-weight: bold; font-style: italic; text-decoration: underline; line-height: 4.9mm; }
+
+/* ------------------------------------------------ zone qui coule
+   Armony : « Stack area » à x = 10 mm, largeur 191 mm. */
+.flux { margin-left: 10mm; width: 191mm; }
+
+table.lignes {
+  width: 191mm;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1pt solid #000;
+}
+/* Hauteurs mesurées sur Armony : ligne simple 5,0 mm trait compris, en-tête 9,7 mm. */
+table.lignes td, table.lignes th {
+  padding: 0 1mm;
+  line-height: 4.65mm;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+table.lignes thead th { line-height: 4.9mm; }
+/* Lignes de détail : Armony garde les doubles espaces de son libellé, et elles
+   décident de la coupure de ligne. */
+table.lignes tr.detail td { white-space: pre-wrap; line-height: 4.9mm; }
+table.lignes thead th {
+  background: var(--rose); color: #fff; font-weight: normal;
+  text-align: center; border: 1pt solid #000;
+  /* « REMISE » tient tout juste dans 14 mm : on ne coupe jamais un mot d'en-tête. */
+  padding: 0 0.5mm; overflow-wrap: normal;
+}
+table.lignes tbody tr.article td { border: 1pt solid #000; }
+/* Lignes de détail sous un article : traits verticaux seulement (« textdocument »). */
+table.lignes tbody tr.detail td { border-left: 1pt solid #000; border-right: 1pt solid #000; }
+table.lignes tbody tr { break-inside: avoid; }
+table.lignes .centre { text-align: center; }
+table.lignes .droite { text-align: right; white-space: nowrap; }
+table.lignes tr.total td {
+  border: 1pt solid #000; padding: 0.4mm 2mm 1.4mm 2mm; line-height: 5mm; text-align: right;
+}
+table.lignes tr.total td.libelle-total { color: var(--gris); font-weight: bold; }
+
+/* Armony : une ligne de tableau par mention (6 mm au moins), puis une ligne vide. */
+.mentions { margin-top: 4.5mm; }
+/* Armony coupe ses lignes 0,4 mm avant le bord de la cellule (mesuré : 199,5 tient, 199,7 non). */
+.mentions p { margin: 0 0 4.9mm 0; padding: 0 1.4mm 0 1mm; min-height: 6mm; line-height: 4.9mm; }
+
+/* Padding et non marge : Chromium supprime la marge d'un bloc qui ouvre une
+   page, et Armony laisse ces 4 mm en haut de la page 2. */
+.signatures { padding-top: 4.4mm; display: flex; break-inside: avoid; }
+.signatures span:first-child { width: 124mm; }

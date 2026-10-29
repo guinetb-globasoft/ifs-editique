@@ -1,0 +1,10 @@
+{# En-tête Chromium, répété à chaque page : le logo.
+   Armony : Image XY="15,0,40,30", le logo contenu dans un cadre de 40 x 30 mm. #}
+<style>
+  /* Chromium insère ce gabarit dans #header, qui a son propre retrait (0,4 cm) :
+     sans cette règle, le logo remonte d'autant. */
+  html, body, #header { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; }
+  .zone { position: relative; width: 210mm; height: 25mm; }
+  .logo { position: absolute; left: 15mm; top: 0; width: 40mm; height: 30mm; object-fit: contain; }
+</style>
+<div class="zone">{% if logo %}<img class="logo" src="{{ logo }}">{% endif %}</div>

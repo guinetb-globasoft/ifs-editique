@@ -1,0 +1,28 @@
+# Render : un service web Docker, en Europe. Les secrets ne sont pas ici (sync: false) : ils se saisissent dans le
+# tableau de bord Render.
+services:
+  - type: web
+    name: ifs-app-editique
+    runtime: docker
+    region: frankfurt
+    # Pas l'offre gratuite : elle met le service en veille, et l'aperçu (synchrone, ~60 s au plus côté IFS)
+    # expirerait pendant le réveil.
+    plan: starter
+    healthCheckPath: /sante
+    envVars:
+      - key: IFS_BASE_URL
+        value: https://gafr-cfg.ifs.cloud
+      - key: IFS_REALM
+        value: pisacfg1
+      # Le client d'Armony (D-009) : identité et droits d'Armony, utilisateur de service ARMONY_SERVICE.
+      - key: IFS_TECH_CLIENT_ID
+        value: ARMONY_SVC
+      - key: IFS_TECH_CLIENT_SECRET
+        sync: false
+      # La valeur d'origine du paramètre IFS ARMONY_SERVER : ce qui n'est pas le bon de commande y est relayé.
+      - key: ARMONY_RELAIS
+        value: https://armony-qua.ga.fr/AxData_Rec
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: EDITIQUE_LANGUE
+        value: fr

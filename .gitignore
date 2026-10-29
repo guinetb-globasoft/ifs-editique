@@ -1,0 +1,15 @@
+# Secrets — jamais dans le dépôt
+.env
+.env.*
+!.env.example
+
+# Environnement Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# PDF produits en local (aperçus, sorties d'outils) : ils portent des données GA
+sorties/
+# Journal des générations : nomme des utilisateurs et des commandes
+data/

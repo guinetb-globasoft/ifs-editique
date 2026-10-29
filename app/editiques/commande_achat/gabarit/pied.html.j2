@@ -1,0 +1,22 @@
+{# Pied de page Chromium, répété à chaque page.
+   Repère : le haut de la marge basse, à 282,2 mm du haut de la feuille.
+   Armony : deux lignes de pied (Arial 7, centrées sur x = 10..190 mm)
+   et « n/N » en Arial 9 à x = 196 mm.
+   ⚠️ Sans conteneur relatif, Chromium place les éléments absolus par rapport
+   au haut de la FEUILLE, pas de la marge : le pied s'imprimait en haut. #}
+<style>
+  /* Chromium insère ce gabarit dans #footer, qui a son propre retrait (0,4 cm). */
+  html, body, #footer { margin: 0 !important; padding: 0 !important; }
+  .zone { position: relative; width: 210mm; height: 14.8mm; top: -0.2mm; }
+  .pied { position: absolute; left: 10mm; width: 180mm; text-align: center;
+          font-family: Arial, "Liberation Sans", sans-serif; font-size: 7pt; line-height: 1;
+          white-space: pre; color: #000; }
+  .page { position: absolute; left: 196mm; top: 2.7mm;
+          font-family: Arial, "Liberation Sans", sans-serif; font-size: 9pt; line-height: 1; color: #000; }
+</style>
+<div class="zone">
+{% for ligne in c.pied_de_page[:2] %}
+  <div class="pied" style="top: {{ 3 * loop.index0 }}mm">{{ ligne }}</div>
+{% endfor %}
+  <div class="page"><span class="pageNumber"></span>/<span class="totalPages"></span></div>
+</div>

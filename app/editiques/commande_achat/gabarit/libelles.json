@@ -1,0 +1,161 @@
+{
+  "_source": "Armony, Ressources GA/Traduction_GA_Commande_d'achat.xlsx (PROD-PROD, 16/10/2026). Clé = code [TRAN.<code>] d'Armony.",
+  "libelles": {
+    "BON DE COMMANDE N°": {
+      "fr": "BON DE COMMANDE N°",
+      "en": ""
+    },
+    "EN DATE DU": {
+      "fr": "EN DATE DU",
+      "en": ""
+    },
+    "COMMANDE LIBEREE": {
+      "fr": "COMMANDE",
+      "en": ""
+    },
+    "SIRET :": {
+      "fr": "SIRET :",
+      "en": ""
+    },
+    "Mail de facturation :": {
+      "fr": "Mail de facturation :",
+      "en": ""
+    },
+    "Projet / section :": {
+      "fr": "Projet ou section :",
+      "en": ""
+    },
+    "Contact :": {
+      "fr": "Contact :",
+      "en": ""
+    },
+    "Mail :": {
+      "fr": "Mail :",
+      "en": ""
+    },
+    "Réf. Contrat cadre :": {
+      "fr": "Réf. Contrat cadre :",
+      "en": ""
+    },
+    "Conditions de paiement :": {
+      "fr": "Conditions de paiement :",
+      "en": ""
+    },
+    "Mode de règlement :": {
+      "fr": "Mode de règlement :",
+      "en": ""
+    },
+    "Adresse de livraison :": {
+      "fr": "Adresse de livraison :",
+      "en": ""
+    },
+    "Horaire de livraison": {
+      "fr": "Horaire de livraison :",
+      "en": ""
+    },
+    "Contact de livraison :": {
+      "fr": "Contact de livraison :",
+      "en": ""
+    },
+    "Date de livraison :": {
+      "fr": "Date de livraison :",
+      "en": ""
+    },
+    "Commentaire client :": {
+      "fr": "Commentaire client :",
+      "en": ""
+    },
+    "REF CLIENT": {
+      "fr": "REF CLIENT",
+      "en": ""
+    },
+    "REF FOUR": {
+      "fr": "REF FOUR",
+      "en": ""
+    },
+    "DESIGNATION": {
+      "fr": "DESIGNATION",
+      "en": ""
+    },
+    "UNITE": {
+      "fr": "UNITE",
+      "en": ""
+    },
+    "QUANTITE": {
+      "fr": "QUANTITE",
+      "en": ""
+    },
+    "PRIX UNITAIRE": {
+      "fr": "PRIX UNITAIRE",
+      "en": ""
+    },
+    "REMISE %": {
+      "fr": "REMISE %",
+      "en": ""
+    },
+    "MONTANT HT": {
+      "fr": "MONTANT HT",
+      "en": ""
+    },
+    "TVA %": {
+      "fr": "TVA %",
+      "en": ""
+    },
+    "MONTANT TOTAL HT EN EUROS": {
+      "fr": "MONTANT TOTAL HT EN EUROS",
+      "en": ""
+    },
+    "Nom et signature du fournisseur": {
+      "fr": "Nom et signature du fournisseur",
+      "en": ""
+    },
+    "Nom et signature du client": {
+      "fr": "Nom et signature du client",
+      "en": ""
+    },
+    "CLIENT": {
+      "fr": "CLIENT",
+      "en": ""
+    },
+    "FOURNISSEUR": {
+      "fr": "FOURNISSEUR",
+      "en": ""
+    },
+    "AdressedeFacturation": {
+      "fr": "Adresse de facturation :",
+      "en": ""
+    },
+    "Téléphone ": {
+      "fr": "Téléphone :",
+      "en": ""
+    },
+    "Numéro fournisseur": {
+      "fr": "Numéro fournisseur",
+      "en": ""
+    },
+    "infos fiche projet": {
+      "fr": "Contact, adresse et horaire de livraison :",
+      "en": ""
+    },
+    "Numéro projet": {
+      "fr": "Numéro projet :",
+      "en": ""
+    },
+    "LIVRAISON": {
+      "fr": "LIVRAISON",
+      "en": ""
+    },
+    "MODALITES DE FACTURATION": {
+      "fr": "MODALITES DE FACTURATION",
+      "en": ""
+    },
+    "BROUILLON DE COMMANDE": {
+      "fr": "BROUILLON DE COMMANDE",
+      "en": ""
+    },
+    "Adresse": {
+      "fr": "Adresse :",
+      "en": ""
+    }
+  }
+}

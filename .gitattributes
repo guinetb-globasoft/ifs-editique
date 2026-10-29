@@ -1,0 +1,6 @@
+# LF dans le dépôt, natif dans la copie de travail.
+* text=auto
+
+*.pdf binary
+*.png binary
+*.jpg binary
