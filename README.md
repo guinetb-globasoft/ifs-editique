@@ -3,9 +3,9 @@
 Produire les éditiques d'IFS Cloud **sans Armony** : l'application lit le document dans IFS, le met en page et rend
 le PDF. Première éditique : **le bon de commande** (commande d'achat), à l'image du projet Armony `Commande_dachat v1`.
 
-Cible : prendre la place d'Armony dans l'impression IFS (aperçu, OK, e-mail depuis la boîte d'impression), pour que
-rien ne change pour l'utilisateur. Ce branchement n'est pas encore construit (spec § 5, décision D-008). Ce qui
-tourne aujourd'hui : l'API et un bouton d'aperçu.
+L'application prend la place d'Armony dans l'impression IFS (aperçu, OK, e-mail depuis la boîte d'impression) : rien
+ne change pour l'utilisateur (spec § 5, D-008, D-009). C'est en service sur CFG ; l'e-mail n'est pas encore envoyé
+(pas de SMTP). Le bouton d'aperçu construit en premier est à retirer (D-011).
 
 > Spécification du bon de commande : [docs/specs/commande-achat.md](docs/specs/commande-achat.md).
 > Décisions : [docs/decisions.md](docs/decisions.md).
@@ -40,7 +40,8 @@ l'archive d'une impression qu'on vient de faire, puis remettre l'original, véri
 ## Brancher sur l'impression IFS (Render)
 
 L'application répond aux adresses d'Armony (`/GetDownload.aspx` pour l'aperçu, `/Execute.aspx` pour OK) ; IFS
-l'appelle dès que le paramètre système `ARMONY_SERVER` pointe vers elle (D-009). Le reste est relayé à Armony.
+l'appelle dès que le paramètre système `ARMONY_SERVER` pointe vers elle (D-009). Le reste est relayé à Armony, pendant
+les essais seulement : ce renvoi ne va pas en PROD (D-011).
 
 1. Render : nouveau *Blueprint* depuis le dépôt (`render.yaml`), puis saisir `IFS_TECH_CLIENT_SECRET` (client
    `ARMONY_SVC`). Vérifier `https://<service>.onrender.com/sante` : `compte_technique` et `relais_armony` à `true`.
@@ -67,11 +68,11 @@ Chaque impression traitée est consignée (journal Render, et `/generations` en 
 Un navigateur sans session est renvoyé au realm IFS, puis revient. Un autre programme présente son jeton IFS dans
 `Authorization: Bearer …`.
 
-## Le bouton d'aperçu dans IFS (en option)
+## Le bouton d'aperçu dans IFS (à retirer)
 
 Dans Page Designer, sur l'écran **Commande d'achat** : ajouter une commande personnalisée qui ouvre, dans un nouvel
-onglet, `https://<hôte>/commande-achat/${OrderNo}`. ⚠️ Non encore essayé en 25R2 (spec, Q10). C'est un aperçu, sans
-effet dans IFS ; l'impression et l'envoi par e-mail passeront par la boîte d'impression d'IFS (D-008).
+onglet, `https://<hôte>/commande-achat/${OrderNo}`. C'est un aperçu, sans effet dans IFS. Décision du 30/10/2026 :
+l'aperçu passe par la boîte d'impression d'IFS, le bouton est retiré avec la connexion des utilisateurs (D-011).
 
 ## Temps de génération
 
@@ -84,14 +85,16 @@ document se lisent en une requête pour toute la commande, et Chromium reste ouv
 
 ## Identité et droits
 
+- Dans l'**impression IFS**, IFS a contrôlé l'accès : tout est lu avec le compte technique (D-008). Les deux points
+  suivants valent pour le bouton, à retirer (D-011).
 - La **commande** est lue avec le jeton de l'utilisateur, sur `PurchaseOrderHandling` : ce qu'il ne voit pas dans IFS,
   il ne l'imprime pas.
 - Les **données de référence** (SIRET, logo, phrases, CGA, coordonnées) viennent de projections qu'un acheteur n'ouvre
   pas. Elles sont lues avec un compte technique (`IFS_TECH_CLIENT_ID` / `IFS_TECH_CLIENT_SECRET`, client Keycloak avec
   utilisateur de service) s'il est configuré, sinon avec l'utilisateur : un administrateur obtient alors un document
   complet, un acheteur un document dont `/donnees` liste les manques.
-- Aujourd'hui, rien n'est écrit dans IFS. Le branchement sur l'impression (D-008) écrira ce qu'Armony écrit, et rien
-  d'autre : PDF de l'archive, travail d'impression, état « imprimé ».
+- Le circuit d'impression écrit ce qu'Armony écrit, et rien d'autre, par `app/ifs/ecriture.py` seulement : PDF de
+  l'archive, travail d'impression, état « imprimé ». Le bouton n'écrit rien.
 
 ## Structure
 
@@ -99,9 +102,11 @@ document se lisent en une requête pour toute la commande, et Chromium reste ouv
 app/
 ├── config.py              .env -> configuration
 ├── main.py                routes
+├── impression.py          les adresses d'Armony appelées par IFS (aperçu, OK), le renvoi à Armony
 ├── version.py             la version, en un seul endroit
 ├── ifs/
 │   ├── lecture.py         lecture OData (GET seulement), journal des appels
+│   ├── ecriture.py        les seules écritures, celles d'Armony
 │   ├── sso.py             login IFS : OIDC authorization code + PKCE, jetons en mémoire
 │   ├── compte_technique.py  client_credentials, facultatif
 │   └── enregistre.py      réponses IFS rejouées (tests, aperçu)
@@ -115,7 +120,8 @@ app/
     └── gabarit/           document.html.j2, entete/pied.html.j2, style.css, libelles.json
 ressources/                logo de repli, textes provisoires par société (mentions, pied de page)
 exemples/                  réponses IFS reconstituées de C106553
-outils/apercu.py           un PDF sans IFS
+outils/                    apercu.py (un PDF sans IFS), armony_server.py (aiguillage), essai_archive.py,
+                           mesurer_mise_en_page.py (fidélité à la ligne de base)
 tests/                     hors ligne : règles, mise en page, API, SSO
 docs/                      spec et décisions
 ```

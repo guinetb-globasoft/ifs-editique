@@ -14,6 +14,7 @@ capture d'écran), pas à promettre une compatibilité.
 | 0.3.1 | 29/10/2026 | Correctif : IFS passe les clés en décimal (`RESULT_KEY_=56608.0`) ; le premier aperçu réel répondait 500 |
 | 0.3.2 | 29/10/2026 | Correctif : répondre au workflow d'IFS le XML d'Armony (`<Root><Error>Dummy</Error></Root>`) et non « OK » ; la boîte affichait « erreur serveur » |
 | 0.3.3 | 29/10/2026 | Titre du bandeau et lignes « COMMANDE / REVISION » recalés sur Armony par la ligne de base : le haut du titre était coupé |
+| 0.3.4 | 30/10/2026 | Documentation : réponses de la DSI (D-011), mesure à la ligne de base (D-010, `outils/mesurer_mise_en_page.py`), skills et agents du projet ; code inchangé |
 """
 
-VERSION = "0.3.3"
+VERSION = "0.3.4"

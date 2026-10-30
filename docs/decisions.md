@@ -18,6 +18,8 @@ du seul numéro.
 Conséquence : ce que le rapport IFS calcule (mentions, pied de page, filtrage des textes document) doit être
 retrouvé dans les projections. Ce qui ne l'est pas encore est listé dans la spec (§ 7 et § 8).
 
+→ D-011 : le bouton est retiré. La lecture des projections à partir du numéro reste celle du circuit d'impression.
+
 ## D-003 — L'utilisateur lit la commande, un compte technique lit la référence (26/10/2026)
 
 La commande est lue avec le jeton de l'utilisateur (SSO sur le realm IFS) : ses droits et ses sites s'appliquent
@@ -28,6 +30,8 @@ et ce qui manque est signalé sans bloquer le document.
 
 Un compte de service IFS sans utilisateur de service rattaché ne lit rien (`ORA-20105 Login.FUSRNULL`, constaté par
 ga-commande) : le client Keycloak de l'application doit en avoir un.
+
+→ D-011 : avec le bouton, la lecture par l'utilisateur disparaît ; tout est lu par le compte technique.
 
 ## D-004 — HTML + Chromium pour le rendu (26/10/2026)
 
@@ -85,6 +89,8 @@ Conséquences :
 
 Pas encore construit. Ce qui reste à trouver est dans la spec (Q11 à Q14).
 
+→ D-009 pour le branchement ; D-011 : bouton retiré, SMTP d'Armony non repris, pas d'impression papier.
+
 ## D-009 — Brancher par `ARMONY_SERVER`, avec l'identité d'Armony, hébergé sur Render (29/10/2026)
 
 Relevé sur CFG (spec § 5.2) : les trois appels d'IFS vers Armony partent de l'URL du paramètre système
@@ -101,3 +107,42 @@ Relevé sur CFG (spec § 5.2) : les trois appels d'IFS vers Armony partent de l'
   synchrone expirerait). Pas de filtrage par adresse IP possible.
 - **Authentification** : aucune pour l'instant, comme vers Armony. Un segment secret dans l'URL viendra dans un
   second temps.
+
+→ D-011 : client Keycloak propre par realm ; le renvoi à Armony ne va pas en PROD.
+
+## D-010 — La mise en page se mesure à la ligne de base (30/10/2026)
+
+Complète D-005. Le calage de D-005 comparait le haut des boîtes de texte. DynamicPDF (Armony) et Chromium ne
+déclarent pas la même hauteur de police : sur cette mesure, tout tombait sous 0,3 mm, alors qu'à la ligne de base,
+là où les caractères sont réellement posés, nos textes étaient jusqu'à 0,8 mm trop haut. Le défaut est apparu quand
+Benoit a vu le haut du titre du bandeau « haché » (blanc sur blanc, au bord du rose).
+
+Désormais : toute mesure de fidélité se fait à la ligne de base, avec `outils/mesurer_mise_en_page.py` (et l'agent
+`verif-mise-en-page`). État au 30/10 sur C106553 : 53 textes communs, tous sous 1 mm, 15 sous 0,3 mm ; bandeau et
+titre à 0,05 mm (0.3.3). Le recalage du reste se fait par famille de textes (classe CSS), pas texte par texte.
+
+## D-011 — Réponses de la DSI pour la cible (30/10/2026)
+
+Réponses de Benoit, DSI, au questionnaire de la cible (document « réponses aux questions » :
+https://claude.ai/artifact/Y3BD7oXCfZEVYyKtAW7Yud) :
+
+- **Bouton d'aperçu retiré** : on supprime ce qui ne sert pas, et l'aperçu passe par la boîte d'impression d'IFS. Le
+  bouton (`/commande-achat/<n°>`), la connexion des utilisateurs au realm (`app/ifs/sso.py`) et le secret de session
+  sortent de l'application ; il ne reste qu'une identité, le compte technique. **Remplace** le bouton de D-002 et de
+  D-008 et la lecture par l'utilisateur de D-003. Pas encore fait dans le code. Les routes de support (`/donnees`,
+  `/generations`) passent par la même connexion : leur sort reste à trancher.
+- **Compte technique propre** : un client Keycloak dans chacun des cinq realms, avec utilisateur de service et les
+  droits d'Armony, sur le modèle d'`ARMONY_SVC`. Complète D-009 : `ARMONY_SVC` en attendant. À créer par
+  l'administrateur IFS.
+- **Authentification de l'appel d'IFS** : le segment secret (D-009) est le mieux que permet la fonction standard
+  d'IFS ; Armony n'en a aucune.
+- **E-mail** : le serveur SMTP et l'expéditeur d'Armony, paramétrés par le N2 Infra, ne sont pas repris ; l'expéditeur
+  est une adresse `@ga.fr` (spec Q13). Plusieurs destinataires sont possibles, en copie et en copie cachée, tous tirés
+  d'IFS (spec Q15).
+- **Pas d'impression papier** chez GA : au pire, l'utilisateur ouvre le PDF et l'imprime.
+- **Volumes** : une centaine d'impressions par jour au plus, étalées sur la journée, ni la nuit ni le week-end. Une
+  instance par environnement suffit.
+- **Fiche RAC** : lancée automatiquement chaque semaine. Ce n'est pas un rapport IFS : un planificateur la déclenche.
+- **Pas de cohabitation avec Armony** : le projet tient en 3 jours de développement et 2 de recette ; toutes les
+  éditiques sont reprises avant de basculer la PROD. Le renvoi à Armony (D-009) ne sert qu'aux essais tant qu'elles ne
+  le sont pas, et ne va pas en PROD.

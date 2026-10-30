@@ -1,0 +1,3 @@
+# Outils de développement, hors image : mesure de la mise en page contre le PDF Armony.
+-r requirements.txt
+pymupdf==1.26.5

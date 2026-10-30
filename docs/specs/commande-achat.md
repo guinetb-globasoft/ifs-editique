@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| Version de la spec | 1.1, 29/10/2026 : point d'entrée cible = l'impression IFS (§ 2.1, § 5, D-008) |
-| Application | ifs-app-editique 0.2.0 : le bouton (§ 2.2) est construit, le branchement sur l'impression ne l'est pas |
+| Version de la spec | 1.2, 30/10/2026 : réponses de la DSI (D-011) : bouton à retirer, pas d'impression papier, plusieurs destinataires |
+| Application | ifs-app-editique 0.3.4 : branchée sur l'impression IFS de CFG ; le bouton (§ 2.2) existe encore, à retirer |
 | Remplace | Armony (Ootary), projet **`Commande_dachat v1`** — disposition IFS « Armony layout » du rapport `PURCHASE_ORDER_PRINT_REP` (`PurchaseOrderPrintRepArmony.rdl`) |
 | Référence visuelle | C106553 imprimé par Armony sur TST le 25/10/2026 (`tests-automatisés-IFS/outputs/editiques/MV-027_ADMIN_C106553_58470.pdf`) |
-| Statut | Rendu conforme à la référence, mesuré (écarts < 0,3 mm). **Données non encore lues dans un IFS réel** : voir § 8. |
+| Statut | Données lues en réel sur CFG (aperçus de C105125 et C103212) ; comparaison champ par champ avec Armony en recette. Mise en page : tous les textes à moins de 1 mm de la référence à la ligne de base, 15 sur 53 sous 0,3 mm (D-010). E-mail non envoyé : pas de SMTP (Q13). |
 
 ## 1. Objet
 
@@ -14,7 +14,8 @@ Produire le bon de commande d'achat d'IFS Cloud **sans Armony ni Ootary** : l'ap
 la met en page et rend le PDF. Le document doit être identique à celui d'Armony, CGA jointes comprises.
 
 L'application prend **la place d'Armony dans l'impression IFS** : aperçu, impression et envoi par e-mail depuis la
-boîte d'impression, sans rien changer pour l'utilisateur (D-008). Un bouton d'aperçu direct peut s'y ajouter.
+boîte d'impression, sans rien changer pour l'utilisateur (D-008). Le bouton d'aperçu direct construit en premier est
+à retirer (D-011).
 
 ### Ce qui fait foi
 
@@ -35,7 +36,7 @@ disposition → fichier axdata, § 5.1). C'est la question ouverte Q1.
 
 Deux points d'entrée, un seul document.
 
-### 2.1 Par l'impression IFS : la cible, pas encore construite
+### 2.1 Par l'impression IFS : la cible, construite et essayée en réel sur CFG
 
 L'utilisateur fait comme aujourd'hui : **Partager › Imprimer commande** sur la commande d'achat. La boîte « Format et
 impression rapport » propose la disposition « Armony layout », la langue, l'imprimante, la case **Envoyer e-mail**
@@ -48,13 +49,13 @@ IFS appelle alors l'application à la place d'Armony, par le circuit décrit au 
 |---|---|
 | **RG-35** | L'application est appelée **par IFS**, avec la clé d'archive (`RESULT_KEY`) et le n° de travail d'impression. C'est IFS qui contrôle ce que l'utilisateur peut imprimer. L'application lit tout avec le compte technique (D-008). |
 | **RG-36** | **Prévisualisation** : le PDF de l'application remplace celui d'IFS dans l'archive avant que la boîte l'affiche. Rien n'est envoyé ni marqué imprimé. |
-| **RG-37** | **OK** : le même PDF remplace celui de l'archive. Puis l'e-mail part si une adresse est saisie (§ 5.3), le document est imprimé si l'imprimante IFS a une imprimante physique, et l'archive passe « imprimée ». |
+| **RG-37** | **OK** : le même PDF remplace celui de l'archive. Puis l'e-mail part si une adresse est saisie (§ 5.3), et l'archive passe « imprimée ». Pas d'impression papier : GA n'en fait pas (D-011). |
 | **RG-38** | Seule la disposition `PurchaseOrderPrintRepArmony.rdl` du rapport `PURCHASE_ORDER_PRINT_REP` passe par l'application. Les autres dispositions restent à IFS, les autres éditiques à Armony. |
 
 Ce n'est pas l'éditique qui marque la commande communiquée. IFS le fait dès l'ouverture de la boîte : il ajoute
 « Commande imprimée » à l'historique et passe `Communicated` à vrai, comme aujourd'hui.
 
-### 2.2 Par un bouton d'aperçu : en option, construit
+### 2.2 Par un bouton d'aperçu : construit, à retirer (D-011)
 
 1. Dans IFS, sur l'écran **Commande d'achat**, un bouton (commande personnalisée de Page Designer) ouvre dans un nouvel
    onglet : `https://<hôte de l'application>/commande-achat/${OrderNo}`.
@@ -279,7 +280,7 @@ donc l'aperçu, puis `Execute.aspx`.
 **Conséquence** : `ARMONY_SERVER` est l'aiguillage unique. Si on le pointe vers l'application, et qu'elle répond aux
 mêmes adresses, IFS l'appelle à la place d'Armony sans autre changement. Le retour arrière consiste à remettre la
 valeur d'origine. En revanche, ce paramètre vaut pour les cinq éditiques : ce qui n'est pas le bon de commande doit
-être relayé à Armony.
+être relayé à Armony, tant que les autres éditiques ne sont pas reprises. Ce renvoi ne va pas en PROD (D-011).
 
 ### 5.3 Ce que fait Armony quand il est appelé
 
@@ -304,6 +305,8 @@ D'après le connecteur `ReportOk.axdata` et le projet `Commande_dachat v1` :
    | Pièces jointes | le PDF ; les documents GED des classes `PJ_COMMANDE` et `CRM PANEL` de la commande et `PJ_CDE-PRJ` du projet, non concaténés au PDF |
 
    L'adresse proposée par défaut est celle de l'utilisateur : pour envoyer au fournisseur, il la remplace.
+   Plusieurs destinataires sont possibles, en copie et en copie cachée, tous tirés d'IFS (DSI, 30/10/2026) : comment
+   IFS les porte dans le travail d'impression est la question Q15.
 7. Il lève `ARMONY_REPORT_PRINT`, qui passe l'archive « imprimée ».
 
 ### 5.4 Ce que l'application devra faire
@@ -312,7 +315,7 @@ Reprendre ce contrat pour la seule disposition du bon de commande (RG-35 à RG-3
 - être appelée par IFS à la place d'Armony : pour l'aperçu, de façon synchrone puisque la boîte attend ; pour OK ;
 - lire avec le compte technique et produire le PDF, avec le code actuel ;
 - le remplacer dans l'archive ;
-- sur OK, envoyer l'e-mail, imprimer s'il le faut, passer l'archive « imprimée ».
+- sur OK, envoyer l'e-mail et passer l'archive « imprimée » (pas d'impression papier, D-011).
 
 Les écritures sont exactement celles d'Armony. La façon dont IFS appellera l'application, et la part du circuit
 (`ARMONY_REPORT_JOB`) à garder ou à simplifier, se décident avec l'administrateur IFS (Q12).
@@ -355,13 +358,14 @@ Les écritures sont exactement celles d'Armony. La façon dont IFS appellera l'a
 | Q5 | D'où lire en OData les mentions (`DOC_PHRASES`) et le pied de page (`DOCUMENT_FOOTERS`) ? Aucun rôle de CFG n'ouvre `DocumentFooterHandling`. | paramétrage « Phrases sur documents » et « Pied de page de document » d'IFS, avec un administrateur |
 | Q6 | Quels types de sortie de texte document le rapport retient-il ? | paramétrage du rapport `PURCHASE_ORDER_PRINT_REP` |
 | Q7 | `CompanyFinance.Description` est-elle la raison sociale imprimée (« GA ENTREPRISE SAS ») ? | première lecture réelle |
-| Q8 | Un client Keycloak avec utilisateur de service peut-il être créé pour l'application, avec un rôle sur le modèle de `GAIFS_RF_ARMONY` : lectures du § 4, plus les seules écritures du circuit d'impression (archive PDF, travail d'impression, `Cf_EventAction`) ? | administrateur IFS |
+| Q8 | Un client Keycloak avec utilisateur de service peut-il être créé pour l'application, avec un rôle sur le modèle de `GAIFS_RF_ARMONY` : lectures du § 4, plus les seules écritures du circuit d'impression (archive PDF, travail d'impression, `Cf_EventAction`) ? **Décidé le 30/10/2026 (DSI, D-011)** : oui, un client dans chacun des cinq realms, avec les droits d'Armony ; `ARMONY_SVC` en attendant. | administrateur IFS (création) |
 | Q9 | L'identifiant de personne du coordinateur est-il son code (*AuthorizeCode*) ? | première lecture réelle |
-| Q10 | La commande personnalisée « ouvrir une URL » de Page Designer accepte-t-elle `${OrderNo}` sur l'écran Commande d'achat en 25R2 ? Seulement si on garde le bouton d'aperçu. | essai dans Page Designer sur CFG |
+| Q10 | ~~La commande personnalisée « ouvrir une URL » de Page Designer accepte-t-elle `${OrderNo}` sur l'écran Commande d'achat en 25R2 ?~~ **Sans objet** : le bouton est retiré (D-011). | – |
 | Q11 | ~~Comment le workflow `ARMONY_REPORT_PRVW` et le message `ARMONY_REPORT` atteignent-ils le serveur Armony ?~~ **Répondu le 29/10/2026** : trois appels HTTP vers `ARMONY_SERVER`, § 5.2. | – |
-| Q12 | Comment faire appeler l'application à la place d'Armony pour le seul bon de commande, sans toucher aux quatre autres éditiques ? Faut-il garder la recréation du travail d'impression (`ARMONY_REPORT_JOB`) ? | administrateur IFS, d'après la réponse à Q11 |
-| Q13 | Quel serveur SMTP et quelle adresse d'expéditeur pour l'e-mail au fournisseur ? **En partie tranché le 29/10/2026 (Benoit, DSI)** : l'expéditeur est une adresse `@ga.fr` ; sur AWS, l'envoi passe par SES, avec le domaine `ga.fr` vérifié (DKIM, SPF). Reste à choisir l'adresse. | DSI |
+| Q12 | ~~Comment faire appeler l'application à la place d'Armony pour le seul bon de commande, sans toucher aux quatre autres éditiques ? Faut-il garder la recréation du travail d'impression (`ARMONY_REPORT_JOB`) ?~~ **Répondu le 29/10/2026** : `ARMONY_SERVER` pointe vers l'application, qui relaie le reste à Armony pendant les essais (D-009, D-011) ; la recréation du travail est gardée, comme Armony. | – |
+| Q13 | Quel serveur SMTP et quelle adresse d'expéditeur pour l'e-mail au fournisseur ? **En partie tranché le 29/10/2026 (Benoit, DSI)** : l'expéditeur est une adresse `@ga.fr` ; sur AWS, l'envoi passe par SES, avec le domaine `ga.fr` vérifié (DKIM, SPF). Reste à choisir l'adresse. Le 30/10/2026 : le SMTP d'Armony, paramétré par le N2 Infra, n'est pas repris (D-011) ; SES ou boîte M365 à trancher. | DSI |
 | Q14 | Combien de temps la boîte attend-elle l'aperçu, et que voit l'utilisateur si l'application échoue ? INT-281 a vu un rendu d'IFS appauvri rester dans l'archive quand le rendu n'aboutit pas. | essai sur CFG une fois branché |
+| Q15 | Comment IFS porte-t-il plusieurs destinataires et une copie cachée dans le travail d'impression ? L'application ne lit aujourd'hui que `SEND_PDF_TO`, sinon `PDF_EVENT_PARAM_1`. Plusieurs destinataires, copies et copies cachées sont possibles, tous tirés d'IFS (DSI, 30/10/2026). | un travail réel sur CFG avec plusieurs adresses |
 
 **Première vérification en réel** : sur CFG, ouvrir `/commande-achat/<n°>/donnees` pour une commande connue. La
 réponse liste chaque appel IFS avec son statut et chaque avertissement : c'est le relevé de ce qui reste à corriger.
